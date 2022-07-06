@@ -8,5 +8,5 @@ pluginManagement {
     }
 }
 
-include("sample")
-include("groovy-sample")
+include("examples:kotlin-dsl")
+include("examples:groovy-dsl")
