@@ -5,6 +5,7 @@ One plugin for all gradle project. This is to reduce the boilerplate build scrip
 ## Test modules
 
 - Groovy build script `build.gradle`
+
 ```groovy
 plugins {
     id "net.spark.plugins"
@@ -18,6 +19,7 @@ spark {
 ```
 
 - Kotlin build script `build.gradle.kts`
+
 ```kotlin
 plugins {
     id("net.spark.plugins")

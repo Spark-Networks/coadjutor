@@ -4,19 +4,17 @@
 package net.spark.plugins
 
 import org.gradle.testfixtures.ProjectBuilder
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
-/**
- * A simple unit test for the 'net.spark.plugins.greeting' plugin.
- */
 class SparkGradlePluginsTest {
-    @Test fun `plugin registers task`() {
+    @Test
+    fun `plugin registers task`() {
         // Create a test project and apply the plugin
         val project = ProjectBuilder.builder().build()
-        project.plugins.apply("net.spark.plugins.greeting")
+        project.plugins.apply("net.spark.plugins")
 
         // Verify the result
-        assertNotNull(project.tasks.findByName("greeting"))
+        assertNotNull(project.extensions.findByName("spark"))
     }
 }

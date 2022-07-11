@@ -11,7 +11,7 @@ class RandomTest {
         int end = 2000;
 
         int actual = Random.between(start, end);
-        
+
         Assertions.assertTrue(actual < end);
         Assertions.assertTrue(actual >= start);
     }

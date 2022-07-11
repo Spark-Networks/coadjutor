@@ -1,0 +1,27 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+# Unix-style newlines with a newline ending every file
+end_of_line = lf
+# A file must end with an empty line - this is good for version control systems
+insert_final_newline = true
+# No whitespace at the end of line
+trim_trailing_whitespace = true
+# The files are utf-8 encoded
+charset = utf-8
+
+# Indentation override for all java files
+[{*.java,*.kt,*.kts}]
+max_line_length = 150
+# Use spaces for indentation
+indent_style = space
+# Each indent should contain 4 spaces
+indent_size = 4
+# Disable wildcard import
+ij_java_class_count_to_use_import_on_demand = 999
+ij_java_names_count_to_use_import_on_demand = 999
+
+[Makefile]
+# Use tabs for indentation (Makefiles require tabs)
+indent_style = tab

@@ -12,7 +12,7 @@ object IdeaPluginConfiguration {
 
             testModules.modules.forEach { testModule ->
 
-                sourceSet.getByName(testModule.name)?.let {
+                sourceSet.getByName(testModule.name).let {
                     module.testSourceDirs = module.testSourceDirs + it.allSource.srcDirs
                     module.testResourceDirs = module.testResourceDirs + it.resources.srcDirs
                 }

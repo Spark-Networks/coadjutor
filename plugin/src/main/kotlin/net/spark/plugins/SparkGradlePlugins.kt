@@ -1,5 +1,6 @@
 package net.spark.plugins
 
+import net.spark.plugins.cred.MavenRepositoryCredentialConfiguration
 import net.spark.plugins.idea.IdeaPluginConfiguration
 import net.spark.plugins.test.TestModuleConfiguration
 import org.gradle.api.Plugin
@@ -7,7 +8,6 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.plugins.ide.idea.IdeaPlugin
-import org.gradle.plugins.ide.idea.model.IdeaModule
 import kotlin.reflect.KClass
 
 
@@ -25,6 +25,7 @@ class SparkGradlePlugins : Plugin<Project> {
         project.afterEvaluate {
             TestModuleConfiguration.apply(project, sourceSets, extension.test)
             IdeaPluginConfiguration.apply(project, sourceSets, extension.test)
+            MavenRepositoryCredentialConfiguration.apply(project)
         }
 
     }

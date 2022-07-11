@@ -1,41 +1,49 @@
 package net.spark.plugins
 
-import org.assertj.core.api.Assertions.assertThat
 import org.gradle.api.Project
+import org.gradle.api.Project.GRADLE_PROPERTIES
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testfixtures.internal.ProjectBuilderImpl
 import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.writeText
 
-class TestProjectBuilder private constructor(name: String, projectDir: File) {
+enum class BuildScriptLanguage(val buildFileName: String, val settingsFileName: String) {
+    GROOVY("build.gradle", "settings.gradle"),
+    KOTLIN("build.gradle.kts", "settings.gradle.kts")
+}
+
+class TestProjectBuilder private constructor(
+    name: String,
+    projectDir: File,
+    private val scriptLanguage: BuildScriptLanguage = BuildScriptLanguage.KOTLIN
+) : ProjectBuilderImpl() {
     private val project = ProjectBuilder.builder()
         .withProjectDir(projectDir)
         .withName(name)
         .build() as DefaultProject
 
     companion object {
-        fun newProject(projectDir: File, name: String = "sample-project"): TestProjectBuilder {
-            return TestProjectBuilder(name, projectDir)
+        fun newProject(
+            projectParentDir: File,
+            scriptLanguage: BuildScriptLanguage,
+            name: String = "sample-project"
+        ): TestProjectBuilder {
+            return TestProjectBuilder(name, projectParentDir.ensureChildDir(name), scriptLanguage)
         }
     }
 
-    fun withGroovyBuildGradle(content: String): TestProjectBuilder {
-        assertThat(project.rootDir.resolve("build.gradle.kts").exists())
-            .describedAs("Kotlin 'build.gradle.kts' script already present at path.")
-            .isFalse
-
-        project.rootDir.resolve("build.gradle").writeText(content.trimIndent().trim())
-        return this
+    fun withBuildGradle(content: String): TestProjectBuilder {
+        return withFile(scriptLanguage.buildFileName, content)
     }
 
-    fun withKotlinBuildGradle(content: String): TestProjectBuilder {
-        assertThat(project.rootDir.resolve("build.gradle").exists())
-            .describedAs("Groovy 'build.gradle' script already present at path.")
-            .isFalse
+    fun withSettingsGradle(content: String): TestProjectBuilder {
+        return withFile(scriptLanguage.settingsFileName, content)
+    }
 
-        project.rootDir.resolve("build.gradle.kts").writeText(content.trimIndent().trim())
-        return this
+    fun withDefaultSettingsGradle(): TestProjectBuilder {
+        return withFile(scriptLanguage.settingsFileName, """rootProject.name = "${project.name}" """)
     }
 
     fun withFile(path: String, content: String): TestProjectBuilder {
@@ -45,8 +53,28 @@ class TestProjectBuilder private constructor(name: String, projectDir: File) {
         return this
     }
 
-    fun build(): Project {
-        project.evaluate()
-        return project
+    fun withGradleProperties(content: String): TestProjectBuilder {
+        return withFile("${project.gradle.gradleUserHomeDir}/$GRADLE_PROPERTIES", content)
     }
+
+    fun build(): Project {
+        return project.evaluate()
+    }
+}
+
+public fun Project.gradlePropertiesPath(): File {
+    return gradle.gradleUserHomeDir.resolve(GRADLE_PROPERTIES)
+}
+
+private fun File.ensureChildDir(name: String): File {
+    val child = this.resolve(name)
+    if (child.isDirectory) {
+        return child
+    }
+
+    if (child.mkdirs()) {
+        return child
+    }
+
+    throw RuntimeException("failed to create child dir $name under $this")
 }

@@ -3,20 +3,22 @@
  */
 package net.spark.plugins
 
+import net.spark.plugins.BuildScriptLanguage.GROOVY
+import net.spark.plugins.BuildScriptLanguage.KOTLIN
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.gradle.api.Project
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.workers.internal.DefaultWorkResult.SUCCESS
+import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class TestSuiteFunctionalTest {
     @Test
-    fun shouldWorkWithKotlinDSL(@TempDir projectRoot: File) {
-        val builder = TestProjectBuilder.newProject(projectRoot)
-            .withKotlinBuildGradle(
+    fun shouldWorkWithKotlinDSL(@TempDir testDir: File) {
+        val builder = TestProjectBuilder.newProject(testDir, KOTLIN)
+            .withBuildGradle(
                 """
                 plugins {
                     id("net.spark.plugins")
@@ -28,9 +30,9 @@ class TestSuiteFunctionalTest {
                 
                 spark {
                     test {
-                        module("testInt") { useJunitPlatform() }
-                        module("testFunctional") { useJunitPlatform() }
-                        module("testAcceptance") { useJunitPlatform() }
+                        module("testInt") { useJunit() }
+                        module("testFunctional") { useJunit() }
+                        module("testAcceptance") { useJunit() }
                     }
                 }
 
@@ -60,13 +62,13 @@ class TestSuiteFunctionalTest {
             assertThat(result.task(":testInt")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testFunctional")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testAcceptance")?.outcome).isEqualTo(SUCCESS)
-        }
+        }.doesNotThrowAnyException()
     }
 
     @Test
     fun shouldWorkWithGroovyDSL(@TempDir projectRoot: File) {
-        val builder = TestProjectBuilder.newProject(projectRoot)
-            .withKotlinBuildGradle(
+        val builder = TestProjectBuilder.newProject(projectRoot, GROOVY)
+            .withBuildGradle(
                 """
                 plugins {
                     id("net.spark.plugins")
@@ -78,9 +80,9 @@ class TestSuiteFunctionalTest {
                 
                 spark {
                     test { t -> 
-                        t.module("testInt") { it.useJunitPlatform() }
-                        t.module("testFunctional") { it.useJunitPlatform() }
-                        t.module("testAcceptance") { it.useJunitPlatform() }
+                        t.module("testInt") { it.useJunit() }
+                        t.module("testFunctional") { it.useJunit() }
+                        t.module("testAcceptance") { it.useJunit() }
                     }
                 }
                 
@@ -112,13 +114,17 @@ class TestSuiteFunctionalTest {
             assertThat(result.task(":testInt")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testFunctional")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testAcceptance")?.outcome).isEqualTo(SUCCESS)
-        }
+        }.doesNotThrowAnyException()
     }
 
     private fun setupModulesWithTest(builder: TestProjectBuilder, vararg modules: String) {
         modules.forEach {
-            builder.withFile("src/$it/java/net/spark/ExampleTest.java",
-                """
+            builder.withFile("src/$it/java/net/spark/ExampleTest.java", exampleTestContent)
+        }
+    }
+}
+
+const val exampleTestContent = """
             package net.spark;
 
             import org.junit.Test;
@@ -131,13 +137,8 @@ class TestSuiteFunctionalTest {
             }
 
             """
-            )
-        }
-    }
 
-}
-
-private fun GradleRunner.withProject(project: Project): GradleRunner {
+fun GradleRunner.withProject(project: Project): GradleRunner {
     this.withProjectDir(project.projectDir)
     return this
 }

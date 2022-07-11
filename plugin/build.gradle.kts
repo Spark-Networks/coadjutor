@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
     `java-gradle-plugin`
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
+    kotlin("jvm") version "1.5.31"
     idea
 }
 
@@ -17,10 +17,24 @@ repositories {
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+
     implementation("org.apache.commons:commons-text:1.9")
+    implementation("org.sonatype.plexus:plexus-cipher:1.7")
+    implementation("org.codehaus.plexus:plexus-sec-dispatcher:2.0")
 
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0-M1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.junit-pioneer:junit-pioneer:1.7.1")
+    testImplementation("org.mock-server:mockserver-junit-jupiter-no-dependencies:5.13.2")
+}
+
+configurations {
+    all {
+        exclude(group = "junit", module = "junit")
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
 }
 
 gradlePlugin {
@@ -52,5 +66,12 @@ tasks.withType(Test::class.java) {
     testLogging {
         exceptionFormat = FULL
         events(PASSED, SKIPPED, FAILED)
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "11"
     }
 }
