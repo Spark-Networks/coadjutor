@@ -51,7 +51,7 @@ object TestLogger : TestListener {
         if (s.name.startsWith(TestRun) || s.name.startsWith(GradleTestExecutor)) return
 
         if (s.parent != null && s.className != null) {
-            println(Color.whiteBold(s.name))
+            println("\n${Color.whiteBold(s.displayName)}")
         }
     }
 
@@ -76,7 +76,7 @@ object TestLogger : TestListener {
 
     override fun afterTest(desc: TestDescriptor, r: TestResult) {
         val executionTime = (r.endTime - r.startTime) / 1000.0
-        println("${DefaultIndent}${indicator(r)} ${desc.className} > ${desc.name} (${Color.yellow(executionTime.toString())} seconds)")
+        println("${DefaultIndent}${indicator(r)} ${desc.name} (${Color.yellow(executionTime.toString())} secs)")
 
         r.exceptions?.let {
             if (it.isEmpty()) {

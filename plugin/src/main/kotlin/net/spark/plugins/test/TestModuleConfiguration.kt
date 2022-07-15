@@ -6,15 +6,12 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
 internal object TestModuleConfiguration {
     fun apply(project: Project, sourceSets: SourceSetContainer, testModule: TestModules) {
-        if (testModule.modules.isEmpty()) {
-            return
-        }
-
         val main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
 
         testModule.modules.forEach { module ->
@@ -37,7 +34,7 @@ internal object TestModuleConfiguration {
 
             // To disable the default gradle logging
             test.testLogging {
-                it.events = mutableSetOf(TestLogEvent.STANDARD_OUT)
+                it.events = mutableSetOf(STANDARD_ERROR)
             }
         }
     }
@@ -61,6 +58,7 @@ internal object TestModuleConfiguration {
     }
 
     private fun setupConfiguration(project: Project, module: String, configName: String) {
+        project.configurations.maybeCreate("${module}$configName")
         project.configurations.getByName("${module}$configName") {
             it.extendsFrom(project.configurations.getByName(configName.replaceFirstChar { c -> c.lowercase() }))
             it.isVisible = true

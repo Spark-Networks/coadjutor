@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
     `java-gradle-plugin`
+    `maven-publish`
     kotlin("jvm") version "1.5.31"
     idea
 }
@@ -15,9 +16,8 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(kotlin("stdlib"))
+    implementation(gradleApi())
 
     implementation("org.apache.commons:commons-text:1.9")
     implementation("org.sonatype.plexus:plexus-cipher:1.7")
@@ -38,9 +38,13 @@ configurations {
 }
 
 gradlePlugin {
-    val spark by plugins.creating {
-        id = "net.spark.plugins"
-        implementationClass = "net.spark.plugins.SparkGradlePlugins"
+    plugins {
+        create("spark") {
+            id = "net.spark.plugins"
+            version = "0.0.1-SNAPSHOT"
+            implementationClass = "net.spark.plugins.SparkGradlePlugin"
+            displayName = "spark-gradle-plugin"
+        }
     }
 }
 
@@ -72,6 +76,6 @@ tasks.withType(Test::class.java) {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }

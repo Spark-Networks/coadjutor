@@ -7,7 +7,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
-class SparkGradlePluginsTest {
+class SparkGradlePluginTest {
     @Test
     fun `plugin registers task`() {
         // Create a test project and apply the plugin

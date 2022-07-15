@@ -10,29 +10,32 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import kotlin.reflect.KClass
 
-
-class SparkGradlePlugins : Plugin<Project> {
+class SparkGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        ensurePluginIsApplied(project, JavaPlugin::class)
+        val extension = project.extensions.create(ExtensionName, SparkPluginExtension::class.java)
 
+        ensurePluginIsApplied(project, JavaPlugin::class)
         if (project.rootProject.file(".idea").isDirectory) {
             ensurePluginIsApplied(project, IdeaPlugin::class)
         }
 
-        val extension = project.extensions.create("spark", SparkPluginExtension::class.java)
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
 
+        TestModuleConfiguration.apply(project, sourceSets, extension.test)
+        IdeaPluginConfiguration.apply(project, sourceSets, extension.test)
+
         project.afterEvaluate {
-            TestModuleConfiguration.apply(project, sourceSets, extension.test)
-            IdeaPluginConfiguration.apply(project, sourceSets, extension.test)
             MavenRepositoryCredentialConfiguration.apply(project)
         }
-
     }
 
     private fun ensurePluginIsApplied(project: Project, kClass: KClass<out Plugin<Project>>) {
         if (!project.plugins.hasPlugin(kClass.java)) {
             project.plugins.apply(kClass.java)
         }
+    }
+
+    companion object {
+        const val ExtensionName = "spark"
     }
 }
