@@ -8,7 +8,7 @@ One plugin for all gradle project. This is to reduce the boilerplate build scrip
 
 ```groovy
 plugins {
-    id "net.spark.plugins"
+    id "net.spark.coadjutor"
 }
 
 spark {
@@ -22,7 +22,7 @@ spark {
 
 ```kotlin
 plugins {
-    id("net.spark.plugins")
+    id("net.spark.coadjutor")
 }
 
 spark {
