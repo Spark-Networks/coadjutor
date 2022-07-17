@@ -3,9 +3,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
     `java-gradle-plugin`
-    `maven-publish`
     kotlin("jvm") version "1.6.21"
     idea
+    `maven-publish`
+    id("com.gradle.plugin-publish") version "1.0.0"
 }
 
 java {
@@ -41,6 +42,11 @@ configurations {
 
 group = "net.spark.coadjutor"
 version = "0.0.1-SNAPSHOT"
+
+pluginBundle {
+    description = "Coadjutor plugin for gradle"
+    tags = listOf("spark", "networks", "gradle", "test", "test-modules", "test-logging", "maven", "credentials")
+}
 
 gradlePlugin {
     plugins {

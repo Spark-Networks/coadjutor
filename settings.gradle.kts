@@ -1,1 +1,1 @@
-rootProject.name = "spark-gradle-plugins"
+rootProject.name = "coadjutor"
