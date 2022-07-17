@@ -41,18 +41,20 @@ configurations {
 }
 
 group = "net.spark.coadjutor"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 
 pluginBundle {
+    website = "https://www.spark.net/"
+    vcsUrl = "https://gitlab.affinitas.de/bpiprava/spark-gradle-plugins"
     description = "Coadjutor plugin for gradle"
-    tags = listOf("spark", "networks", "gradle", "test", "test-modules", "test-logging", "maven", "credentials")
+    tags = listOf("spark", "networks", "test", "test-modules", "test-logging", "maven", "credentials")
 }
 
 gradlePlugin {
     plugins {
         create("coadjutor") {
-            id = "net.spark.coadjutor"
-            version = "0.0.1-SNAPSHOT"
+            id = project.group.toString()
+            version = project.version
             implementationClass = "net.spark.coadjutor.CoadjutorPlugin"
             displayName = "spark-gradle-plugin"
         }
