@@ -2,10 +2,8 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
-    `java-gradle-plugin`
-    kotlin("jvm") version "1.6.21"
     idea
-    `maven-publish`
+    kotlin("jvm") version "1.6.21"
     id("com.gradle.plugin-publish") version "1.0.0"
 }
 
@@ -41,13 +39,14 @@ configurations {
 }
 
 group = "net.spark.coadjutor"
-version = "0.0.2"
+version = "0.0.3"
 
 pluginBundle {
     website = "https://github.com/Spark-Networks/coadjutor/"
     vcsUrl = "https://github.com/Spark-Networks/coadjutor"
     description = "Coadjutor plugin for gradle"
-    tags = listOf("spark", "networks", "test", "test-modules", "test-logging", "maven", "credentials")
+    tags = listOf("spark", "networks", "test", "test-modules", "test-logging", "maven", "credentials", "coadjutor")
+    pluginTags = mapOf("coadjutor" to listOf("maven", "credentials", "coadjutor", "test", "test-modules", "test-logging"))
 }
 
 gradlePlugin {
@@ -56,7 +55,8 @@ gradlePlugin {
             id = project.group.toString()
             version = project.version
             implementationClass = "net.spark.coadjutor.CoadjutorPlugin"
-            displayName = "spark-gradle-plugin"
+            displayName = "Coadjutor gradle plugin"
+            description = "Plugin to configure test modules and encrypted credentials in gradle.properties file"
         }
     }
 }
