@@ -21,7 +21,7 @@ class TestSuiteFunctionalTest {
             .withBuildGradle(
                 """
                 plugins {
-                    id("net.spark.plugins")
+                    id("net.spark.coadjutor")
                 }
 
                 repositories {
@@ -50,15 +50,8 @@ class TestSuiteFunctionalTest {
 
         setupModulesWithTest(builder, "testInt", "testFunctional", "testAcceptance")
 
-        // Run the build
-        val runner = GradleRunner.create()
-            .withProject(builder.build())
-            .forwardOutput()
-            .withPluginClasspath()
-            .withArguments("testInt", "testFunctional", "testAcceptance")
-
         assertThatCode {
-            val result = runner.build()
+            val result = Runner.run(builder, "testInt", "testFunctional", "testAcceptance")
             assertThat(result.task(":testInt")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testFunctional")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testAcceptance")?.outcome).isEqualTo(SUCCESS)
@@ -71,7 +64,7 @@ class TestSuiteFunctionalTest {
             .withBuildGradle(
                 """
                 plugins {
-                    id("net.spark.plugins")
+                    id("net.spark.coadjutor")
                 }
 
                 repositories {
@@ -102,15 +95,8 @@ class TestSuiteFunctionalTest {
 
         setupModulesWithTest(builder, "testInt", "testFunctional", "testAcceptance")
 
-        // Run the build
-        val runner = GradleRunner.create()
-            .withProject(builder.build())
-            .forwardOutput()
-            .withPluginClasspath()
-            .withArguments("testInt", "testFunctional", "testAcceptance")
-
         assertThatCode {
-            val result = runner.build()
+            val result = Runner.run(builder, "testInt", "testFunctional", "testAcceptance")
             assertThat(result.task(":testInt")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testFunctional")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testAcceptance")?.outcome).isEqualTo(SUCCESS)

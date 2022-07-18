@@ -29,7 +29,7 @@ class MavenCredentialsFunctionalTest {
                 import java.util.*
                 plugins {
                     java
-                    id("net.spark.plugins")
+                    id("net.spark.coadjutor")
                 }
 
                 repositories {

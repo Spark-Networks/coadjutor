@@ -21,10 +21,9 @@ class CoadjutorPlugin : Plugin<Project> {
 
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
 
-        TestModuleConfiguration.apply(project, sourceSets, extension.test)
-        IdeaPluginConfiguration.apply(project, sourceSets, extension.test)
-
         project.afterEvaluate {
+            TestModuleConfiguration.apply(project, sourceSets, extension.test)
+            IdeaPluginConfiguration.apply(project, sourceSets, extension.test)
             MavenRepositoryCredentialConfiguration.apply(project)
         }
     }

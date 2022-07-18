@@ -5,12 +5,16 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
 internal object TestModuleConfiguration {
     fun apply(project: Project, sourceSets: SourceSetContainer, testModule: TestModules) {
+        if (testModule.modules.isEmpty()) {
+            return
+        }
+
         val main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
 
         testModule.modules.forEach { module ->
