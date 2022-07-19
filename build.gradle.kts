@@ -38,14 +38,14 @@ configurations {
     }
 }
 
-group = "net.spark.coadjutor"
-version = "0.0.3"
+group = "de.affinitas.coadjutor"
+version = "0.0.1"
 
 pluginBundle {
     website = "https://github.com/Spark-Networks/coadjutor/"
     vcsUrl = "https://github.com/Spark-Networks/coadjutor"
     description = "Coadjutor plugin for gradle"
-    tags = listOf("spark", "networks", "test", "test-modules", "test-logging", "maven", "credentials", "coadjutor")
+    tags = listOf("test", "test-modules", "test-logging", "maven", "credentials", "coadjutor")
     pluginTags = mapOf("coadjutor" to listOf("maven", "credentials", "coadjutor", "test", "test-modules", "test-logging"))
 }
 
@@ -54,7 +54,7 @@ gradlePlugin {
         create("coadjutor") {
             id = project.group.toString()
             version = project.version
-            implementationClass = "net.spark.coadjutor.CoadjutorPlugin"
+            implementationClass = "de.affinitas.coadjutor.CoadjutorPlugin"
             displayName = "Coadjutor gradle plugin"
             description = "Plugin to configure test modules and encrypted credentials in gradle.properties file"
         }
