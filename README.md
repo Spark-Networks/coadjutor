@@ -15,7 +15,7 @@ Coadjutor plugin supports the reading encrypted maven credentials from the `$GRA
 // Example build script with maven repositories
 
 plugins {
-    id "de.affinitas.coadjutor"
+    id "net.spark.coadjutor"
 }
 
 repositories {
@@ -96,12 +96,14 @@ The plugin is also adds the `addCredentials` task to easily add the credentials 
 
 ```groovy
 plugins {
-    id "de.affinitas.coadjutor"
+    id "net.spark.coadjutor"
 }
 
 coadjutor {
     test {
-        it.module("testInt") { it.useJunitPlatform() }  // Registers the test module for dir src/testInt/java
+       it.module("testA") // Registers the test module for dir src/testA/java with test task 'testA'
+       it.module("testB", false) // Registers the test module for dir src/testB/java with test task 'testB' and uses junit4 test engine
+       it.module("testC", "myCustomTestDir") // Registers the test module for dir src/myCustomTestDir/java and uses junit platform test engine
     }
 }
 ```
@@ -110,14 +112,12 @@ coadjutor {
 
 ```kotlin
 plugins {
-    id("de.affinitas.coadjutor")
+    id("net.spark.coadjutor")
 }
 
 coadjutor {
     test {
-        module("testInt") {                           // Registers the test module for dir src/testInt/java
-            useJunitPlatform()
-        }
+        module("testInt")
     }
 }
 ```

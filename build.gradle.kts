@@ -38,7 +38,7 @@ configurations {
     }
 }
 
-group = "de.affinitas.coadjutor"
+group = "net.spark.coadjutor"
 version = "0.0.1"
 
 pluginBundle {
@@ -54,7 +54,7 @@ gradlePlugin {
         create("coadjutor") {
             id = project.group.toString()
             version = project.version
-            implementationClass = "de.affinitas.coadjutor.CoadjutorPlugin"
+            implementationClass = "net.spark.coadjutor.CoadjutorPlugin"
             displayName = "Coadjutor gradle plugin"
             description = "Plugin to configure test modules and encrypted credentials in gradle.properties file"
         }
