@@ -1,6 +1,7 @@
 package de.affinitas.coadjutor.test
 
 import org.apache.commons.text.CaseUtils.toCamelCase
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
@@ -8,6 +9,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
+import java.io.File
 
 internal object TestModuleConfiguration {
     fun apply(project: Project, sourceSets: SourceSetContainer, testModule: TestModules) {
@@ -19,8 +21,11 @@ internal object TestModuleConfiguration {
 
         testModule.modules.forEach { module ->
             project.logger.info("Applying the test module configuration for $module")
+            val moduleDir = project.projectDir.resolve(module.dir)
+            validateModuleDirectory(moduleDir)
 
             val testSourceSet = sourceSets.create(module.name) {
+                it.java.srcDir(moduleDir)
                 it.compileClasspath += main.output
                 it.runtimeClasspath += main.output
             }
@@ -39,6 +44,16 @@ internal object TestModuleConfiguration {
             test.testLogging {
                 it.events = mutableSetOf(STANDARD_ERROR)
             }
+        }
+    }
+
+    private fun validateModuleDirectory(moduleDir: File) {
+        if (!moduleDir.exists()) {
+            throw GradleException("Test module dir $moduleDir does not exist.")
+        }
+
+        if (moduleDir.isFile) {
+            throw GradleException("Test module dir $moduleDir is not a directory.")
         }
     }
 

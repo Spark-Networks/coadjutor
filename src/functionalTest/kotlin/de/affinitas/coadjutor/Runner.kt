@@ -18,4 +18,9 @@ object Runner {
     fun run(builder: TestProjectBuilder, vararg args: String): BuildResult {
         return run(builder.build(), *args)
     }
+
+    private fun GradleRunner.withProject(project: Project): GradleRunner {
+        this.withProjectDir(project.projectDir)
+        return this
+    }
 }

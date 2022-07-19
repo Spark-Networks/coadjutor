@@ -4,7 +4,6 @@ import de.affinitas.coadjutor.BuildScriptLanguage.KOTLIN
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.gradle.api.Project
-import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -67,20 +66,13 @@ class MavenCredentialsFunctionalTest {
                 }
                 """
             )
-
-        builder.withFile("src/test/java/de/affinitas/ExampleTest.java", exampleTestContent)
+            .withJunitTest("src/test/java/de/affinitas/ExampleTest.java", "ExampleTest")
 
         // Run the build
         val project = builder.build()
-        val runner = GradleRunner.create()
-            .withProject(project)
-            .withPluginClasspath()
-            .withTestKitDir(project.gradle.gradleUserHomeDir)
-            .forwardOutput()
-            .withArguments("writeRepoConfigAsPropFiles")
 
         assertThatCode {
-            val result = runner.build()
+            val result = Runner.run(project, "writeRepoConfigAsPropFiles")
             assertThat(result.task(":writeRepoConfigAsPropFiles")?.outcome).isEqualTo(UP_TO_DATE)
         }.doesNotThrowAnyException()
 

@@ -57,6 +57,42 @@ class TestProjectBuilder private constructor(
         return withFile("${project.gradle.gradleUserHomeDir}/$GRADLE_PROPERTIES", content)
     }
 
+    fun withJunitTest(path: String, name: String, content: String = "System.out.println(\"Example test\");"): TestProjectBuilder {
+        return withFile(
+            path,
+            """
+                package de.affinitas;
+
+                import org.junit.Test;
+
+                public class $name {
+                    @Test
+                    public void exampleTest() {
+                        $content
+                    }
+                }
+                """
+        )
+    }
+
+    fun withJunitPlatformTest(path: String, name: String, content: String = "System.out.println(\"Example test\");"): TestProjectBuilder {
+        return withFile(
+            path,
+            """
+            package de.affinitas;
+
+            import org.junit.jupiter.api.Test;
+
+            public class $name {
+                @Test
+                public void exampleTest() {
+                    $content
+                }
+            }
+            """
+        )
+    }
+
     fun build(): Project {
         return project.evaluate()
     }

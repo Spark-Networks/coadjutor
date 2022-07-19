@@ -1,26 +1,19 @@
 package de.affinitas.coadjutor.test
 
-typealias ModuleDSLUnit = TestModules.ModuleDSL.() -> Unit
-
 open class TestModules {
     val modules: MutableSet<Module> = mutableSetOf()
 
-    fun module(name: String, unit: ModuleDSLUnit) {
-        val mod = ModuleDSL().apply(unit)
-        modules.add(Module(name, mod.enableUnitPlatform))
+    fun module(name: String) {
+        modules.add(Module(name, "src/$name", true))
     }
 
-    open class ModuleDSL {
-        var enableUnitPlatform: Boolean = true
-
-        fun useJunitPlatform() {
-            enableUnitPlatform = true
-        }
-
-        fun useJunit() {
-            enableUnitPlatform = false
-        }
+    fun module(name: String, useJunitPlatform: Boolean = true) {
+        modules.add(Module(name, "src/$name", useJunitPlatform))
     }
 
-    data class Module(val name: String, val useJunitPlatform: Boolean)
+    fun module(name: String, dir: String, useJunitPlatform: Boolean = true) {
+        modules.add(Module(name, dir, useJunitPlatform))
+    }
+
+    data class Module(val name: String, val dir: String, val useJunitPlatform: Boolean)
 }
