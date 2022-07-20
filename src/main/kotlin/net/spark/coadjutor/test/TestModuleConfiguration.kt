@@ -25,7 +25,7 @@ internal object TestModuleConfiguration {
             validateModuleDirectory(moduleDir)
 
             val testSourceSet = sourceSets.create(module.name) {
-                it.java.srcDir(moduleDir)
+                it.java.srcDirs(getSrcDirs(moduleDir))
                 it.compileClasspath += main.output
                 it.runtimeClasspath += main.output
             }
@@ -45,6 +45,14 @@ internal object TestModuleConfiguration {
                 it.events = mutableSetOf(STANDARD_ERROR)
             }
         }
+    }
+
+    private fun getSrcDirs(moduleDir: File): Set<File> {
+        return setOf(
+            moduleDir.resolve("java"),
+            moduleDir.resolve("groovy"),
+            moduleDir.resolve("kotlin")
+        )
     }
 
     private fun validateModuleDirectory(moduleDir: File) {

@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test
 
 class CoadjutorPluginTest {
     @Test
-    fun `plugin registers task`() {
-        // Create a test project and apply the plugin
+    fun `plugin must registers extension when applied`() {
+        // Given
         val project = ProjectBuilder.builder().build()
+
+        // When
         project.plugins.apply("net.spark.coadjutor")
 
-        // Verify the result
+        // Then
         assertNotNull(project.extensions.findByName("coadjutor"))
     }
 }
