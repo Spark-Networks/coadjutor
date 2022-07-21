@@ -31,10 +31,6 @@ internal object TestModuleConfiguration {
                 it.runtimeClasspath += main.output
             }
 
-            testSourceSet.resources.srcDirs.forEach {
-                println(module.name + " " + it.absolutePath)
-            }
-
             listOf("Implementation", "RuntimeOnly").forEach {
                 setupConfiguration(project, module.name, it)
             }

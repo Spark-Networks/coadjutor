@@ -39,7 +39,7 @@ configurations {
 }
 
 group = "net.spark.coadjutor"
-version = "0.0.4"
+version = "0.0.5"
 
 pluginBundle {
     website = "https://github.com/Spark-Networks/coadjutor/"
