@@ -26,8 +26,13 @@ internal object TestModuleConfiguration {
 
             val testSourceSet = sourceSets.create(module.name) {
                 it.java.srcDirs(getSrcDirs(moduleDir))
+                it.resources.setSrcDirs(setOf(moduleDir.resolve("resources")))
                 it.compileClasspath += main.output
                 it.runtimeClasspath += main.output
+            }
+
+            testSourceSet.resources.srcDirs.forEach {
+                println(module.name + " " + it.absolutePath)
             }
 
             listOf("Implementation", "RuntimeOnly").forEach {
@@ -48,11 +53,13 @@ internal object TestModuleConfiguration {
     }
 
     private fun getSrcDirs(moduleDir: File): Set<File> {
-        return setOf(
-            moduleDir.resolve("java"),
-            moduleDir.resolve("groovy"),
-            moduleDir.resolve("kotlin")
-        )
+        val sourceDirs = mutableSetOf<File>()
+        setOf(moduleDir.resolve("java"), moduleDir.resolve("groovy"), moduleDir.resolve("kotlin")).forEach {
+                if (it.exists() && it.isDirectory) {
+                    sourceDirs.add(it)
+                }
+            }
+        return sourceDirs
     }
 
     private fun validateModuleDirectory(moduleDir: File) {

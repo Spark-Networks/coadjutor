@@ -131,9 +131,77 @@ class TestSuiteFunctionalTest {
             assertThat(result.task(":integrationTest")?.outcome).isEqualTo(SUCCESS)
             assertThat(result.task(":testFunctional")?.outcome).isEqualTo(SUCCESS)
 
-            assertThat(result.output).describedAs("Making sure that test is picked up and executed").contains("FunctionalTest")
+            assertThat(result.output)
+                .describedAs("Making sure that test is picked up and executed")
+                .contains("FunctionalTest")
 
-            assertThat(result.output).describedAs("Making sure that test is picked up and executed").contains("IntegrationTest")
+            assertThat(result.output)
+                .describedAs("Making sure that test is picked up and executed")
+                .contains("IntegrationTest")
+        }.doesNotThrowAnyException()
+    }
+
+    @Test
+    fun shouldAutoRegisterTheResourceDirWithTestModule(@TempDir testDir: File) {
+        val resourceReaderTest = """
+            import org.junit.jupiter.api.Test;
+
+            import java.io.IOException;
+            import java.util.Properties;
+
+            import static org.junit.jupiter.api.Assertions.assertEquals;
+
+            public class ResourceReaderTest {
+                @Test
+                void shouldReadResources() throws IOException {
+                    Properties props = new Properties();
+
+                    props.load(ResourceReaderTest.class.getResourceAsStream("/example.properties"));
+
+                    assertEquals(props.getProperty("net.spark.resource_reader"), "ResourceReaderExample");
+                }
+            }
+        """.trimIndent()
+
+        val builder = TestProjectBuilder.newProject(testDir, KOTLIN).withBuildGradle(
+            """
+                plugins {
+                    id("net.spark.coadjutor")
+                }
+
+                repositories {
+                    mavenCentral()
+                }
+
+                coadjutor {
+                    test {
+                        module("integrationTest", "src/testIntegration")
+                    }
+                }
+
+                val testFunctionalImplementation by configurations.creating
+                val integrationTestImplementation by configurations.creating
+
+                dependencies {
+                   testFunctionalImplementation("junit:junit:4.13.2")
+                   integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.9.0-M1")
+                }
+                """
+        )
+            .withFile("src/testIntegration/java/net/spark/ResourceReaderTest.java", resourceReaderTest)
+            .withFile(
+                "src/testIntegration/resources/example.properties",
+                """
+                net.spark.resource_reader=ResourceReaderExample
+            """
+            )
+
+        assertThatCode {
+            val result = Runner.run(builder, "integrationTest")
+            assertThat(result.task(":integrationTest")?.outcome).isEqualTo(SUCCESS)
+            assertThat(result.output)
+                .describedAs("Making sure that test is picked up and executed")
+                .contains("IntegrationTest")
         }.doesNotThrowAnyException()
     }
 }
