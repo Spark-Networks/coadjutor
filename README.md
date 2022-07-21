@@ -1,7 +1,8 @@
 # Coadjutor gradle plugin
 
-![Release](https://github.com/Spark-Networks/coadjutor/actions/workflows/gradle.yml/badge.svg)
+![Tests](https://github.com/Spark-Networks/coadjutor/actions/workflows/gradle.yml/badge.svg)
 [![GitHub license](https://img.shields.io/github/license/Spark-Networks/coadjutor)](https://github.com/Spark-Networks/coadjutor/blob/main/LICENSE)
+[![Release](https://img.shields.io/github/v/release/Spark-Networks/coadjutor?display_name=release&include_prereleases&sort=date)](https://github.com/Spark-Networks/coadjutor/releases)
 
 One plugin for all gradle project. This is to reduce the boilerplate build script, with following capabilities:
 
