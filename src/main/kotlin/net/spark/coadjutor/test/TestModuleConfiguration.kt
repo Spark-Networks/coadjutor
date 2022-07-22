@@ -13,10 +13,6 @@ import java.io.File
 
 internal object TestModuleConfiguration {
     fun apply(project: Project, sourceSets: SourceSetContainer, testModule: TestModules) {
-        if (testModule.modules.isEmpty()) {
-            return
-        }
-
         val main = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
 
         testModule.modules.forEach { module ->
